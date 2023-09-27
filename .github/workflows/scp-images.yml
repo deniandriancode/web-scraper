@@ -1,0 +1,21 @@
+name: SCP Images Scraper
+run-name: ${{ github.actor }} is scraping SCP images!
+on: [push]
+jobs:
+  scrape-scp-images:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          python-version: "3.11"
+      - run: |
+          cd scp-images
+          pip install beautifulsoup4 requests
+          python main.py
+      - run: echo "All done!"
+      
+      - uses: actions/upload-artifact@v3
+        with:
+          name: scp-images
+          path: scp-images/scp-images.json
