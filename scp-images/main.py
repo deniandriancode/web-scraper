@@ -38,18 +38,21 @@ all_scp_links_clean = filter(lambda x: "SCP-" in x[1], all_scp_links)
 all_scp_links_clean = list(all_scp_links_clean)
 
 def get_image(url: str) -> str:
-    r = rq.get(url).content
-    s = BeautifulSoup(r, "html.parser")
-    img = s.select_one(".scp-image-block.block-right")
-    if img == None:
+    try:
+        r = rq.get(url).content
+        s = BeautifulSoup(r, "html.parser")
+        img = s.select_one(".scp-image-block.block-right")
+        if img == None:
+            return ""
+        
+        img_link = img.select_one("img")
+        if img_link != None:
+            return img_link.get("src")
+        
+        iframe_link = img.select_one("iframe").get("src")
+        return f"{base_url}{iframe_link}"
+    except:
         return ""
-    
-    img_link = img.select_one("img")
-    if img_link != None:
-        return img_link.get("src")
-    
-    iframe_link = img.select_one("iframe").get("src")
-    return f"{base_url}{iframe_link}"
 
 all_scp_dict = []
 
